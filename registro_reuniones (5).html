@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Registro de Reuniones del Proyecto</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
+  <style>
+    /* ─── Variables ─────────────────────────────────────── */
+    :root {
+      --bg:        #f5f4f0;
+      --surface:   #ffffff;
+      --border:    #e2e0d9;
+      --accent:    #2a5c45;
+      --accent-lt: #e8f0ec;
+      --text-1:    #1a1a18;
+      --text-2:    #5c5c56;
+      --text-3:    #9c9b94;
+      --pending:   #8a6200;
+      --pending-bg:#fff8e6;
+      --done:      #1d6b3e;
+      --done-bg:   #e8f5ee;
+      --cancel:    #7a3030;
+      --cancel-bg: #fceaea;
+      --radius:    10px;
+      --shadow:    0 2px 12px rgba(0,0,0,0.07);
+    }
+
+    /* ─── Reset & Base ──────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text-1);
+      min-height: 100vh;
+      padding: 48px 24px 80px;
+    }
+
+    /* ─── Layout ─────────────────────────────────────────── */
+    .wrapper {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    /* ─── Header ─────────────────────────────────────────── */
+    header {
+      margin-bottom: 40px;
+    }
+
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    header h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 400;
+      color: var(--text-1);
+      line-height: 1.15;
+    }
+
+    .header-line {
+      width: 48px;
+      height: 3px;
+      background: var(--accent);
+      border-radius: 2px;
+      margin-top: 16px;
+    }
+
+    /* ─── Card ───────────────────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    /* ─── Table ──────────────────────────────────────────── */
+    .table-wrap { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    thead tr {
+      background: var(--accent);
+    }
+
+    thead th {
+      color: #fff;
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      padding: 14px 20px;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background .15s;
+    }
+
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover      { background: #fafaf8; }
+
+    tbody td {
+      padding: 14px 20px;
+      vertical-align: middle;
+      color: var(--text-2);
+    }
+
+    /* reunión number */
+    td.num {
+      font-weight: 600;
+      color: var(--text-1);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    /* tema */
+    td.tema {
+      color: var(--text-1);
+      font-weight: 400;
+    }
+
+    /* fecha */
+    td.fecha {
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+      font-size: 13px;
+    }
+
+    /* ─── Badges ──────────────────────────────────────────── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .badge-done    { background: var(--done-bg);    color: var(--done);    }
+    .badge-pending { background: var(--pending-bg); color: var(--pending); }
+    .badge-cancel  { background: var(--cancel-bg);  color: var(--cancel);  }
+
+    .badge-done::before    { background: var(--done);    }
+    .badge-pending::before { background: var(--pending); }
+    .badge-cancel::before  { background: var(--cancel);  }
+
+    /* ─── Link button ─────────────────────────────────────── */
+    .btn-link {
+      display: inline-block;
+      padding: 5px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      background: var(--accent-lt);
+      color: var(--accent);
+      border: 1px solid #c6dbd2;
+      transition: background .15s, border-color .15s;
+      white-space: nowrap;
+    }
+
+    .btn-link:hover {
+      background: #d5e8df;
+      border-color: #a8c9bc;
+    }
+
+    .btn-none {
+      color: var(--text-3);
+      font-size: 13px;
+      font-style: italic;
+    }
+
+    /* ─── Section title ───────────────────────────────────── */
+    .section-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--text-1);
+      margin-bottom: 20px;
+    }
+
+    /* ─── Summary section ─────────────────────────────────── */
+    .summary-section {
+      margin-top: 36px;
+    }
+
+    .stats-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      flex: 1;
+      min-width: 150px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px 20px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-family: 'DM Serif Display', serif;
+      font-size: 40px;
+      line-height: 1;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+
+    /* ─── Observations ─────────────────────────────────────── */
+    .obs-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px 28px;
+    }
+
+    .obs-card h3 {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    /* editable textarea */
+    .obs-text {
+      width: 100%;
+      min-height: 110px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 14px 16px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--text-1);
+      line-height: 1.6;
+      resize: vertical;
+      background: var(--bg);
+      outline: none;
+      transition: border-color .2s;
+    }
+
+    .obs-text:focus { border-color: var(--accent); }
+
+    /* ─── Detail panel (expandable) ──────────────────────── */
+    .detail-row td {
+      padding: 0 !important;
+      background: #f9faf8;
+      border-bottom: 2px solid var(--accent) !important;
+    }
+
+    .detail-inner {
+      display: none;
+      padding: 28px 28px 32px;
+    }
+
+    .detail-inner.open { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+
+    @media (max-width: 640px) {
+      .detail-inner.open { grid-template-columns: 1fr; }
+    }
+
+    .detail-block h4 {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .detail-block ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .detail-block ul li {
+      font-size: 13px;
+      color: var(--text-2);
+      line-height: 1.5;
+      padding-left: 18px;
+      position: relative;
+    }
+
+    .detail-block ul li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-size: 11px;
+      top: 1px;
+    }
+
+    /* checklist style */
+    .detail-block ul.checklist li::before { content: '☐'; font-size: 12px; }
+    .detail-block ul.checklist li.done::before { content: '☑'; color: var(--done); }
+
+    .detail-block p {
+      font-size: 13px;
+      color: var(--text-2);
+      line-height: 1.6;
+    }
+
+    .alert-note {
+      background: #fff8e6;
+      border-left: 3px solid #e6a817;
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--pending);
+      line-height: 1.5;
+      margin-top: 10px;
+    }
+
+    /* toggle button in cell */
+    .btn-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      background: var(--accent-lt);
+      color: var(--accent);
+      border: 1px solid #c6dbd2;
+      cursor: pointer;
+      transition: background .15s;
+      white-space: nowrap;
+    }
+    .btn-toggle:hover { background: #d5e8df; }
+    .btn-toggle .arrow { transition: transform .2s; display: inline-block; }
+    .btn-toggle.active .arrow { transform: rotate(90deg); }
+
+    /* ─── Member name label ──────────────────────────────── */
+    .member-name {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    /* ─── Footer ──────────────────────────────────────────── */
+    footer {
+      margin-top: 48px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-3);
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrapper">
+
+  <!-- ══ HEADER ══════════════════════════════════════════ -->
+  <header>
+    <p class="eyebrow">Panel de seguimiento</p>
+    <h1>Registro de reuniones<br>del proyecto</h1>
+    <div class="header-line"></div>
+  </header>
+
+  <!-- ══ TABLE ═══════════════════════════════════════════ -->
+  <div class="card">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Reunión</th>
+            <th>Tema</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+            <th>Enlace</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- ── Fila 1 ── -->
+          <tr>
+            <td class="num">Reunión 1</td>
+            <td class="tema">Trabajo inicial en clase – formación del equipo y primer análisis del reto</td>
+            <td class="fecha">03 mar 2025</td>
+            <td><span class="badge badge-done">Realizada</span></td>
+            <td>
+              <button class="btn-toggle" id="toggle-r1" onclick="toggleDetail('r1', this)">
+                Ver detalle <span class="arrow">&#8250;</span>
+              </button>
+            </td>
+          </tr>
+          <!-- ── Detalle Reunión 1 ── -->
+          <tr class="detail-row">
+            <td colspan="5">
+              <div class="detail-inner" id="detail-r1">
+                <div>
+                  <div class="detail-block">
+                    <h4>Tareas y próximos pasos</h4>
+                    <ul class="checklist">
+                      <li>Entrar en Moodle para ver la asignación de equipos</li>
+                      <li>Una persona del equipo debe crear una cuenta gratuita de Miro</li>
+                      <li>Copiar el contenido del tablero del instructor al tablero del equipo (verificar que quede en la cuenta del equipo)</li>
+                      <li>Configurar los permisos de edición para que el instructor pueda dejar notas</li>
+                      <li>Completar las actividades de la semana 1 en Miro</li>
+                      <li>Seleccionar el reto del equipo</li>
+                      <li>Crear el plan de investigación</li>
+                      <li>Elegir 3 técnicas de investigación (al menos 1 cualitativa/cuantitativa + al menos 1 con interacción con personas)</li>
+                      <li>Documentar todo el trabajo en el tablero de Miro para la siguiente sesión</li>
+                    </ul>
+                  </div>
+                  <div class="detail-block" style="margin-top:20px">
+                    <h4>Configuración de Miro</h4>
+                    <ul>
+                      <li>Una persona por equipo crea la cuenta gratuita</li>
+                      <li>Copiar actividades del tablero del instructor al tablero del equipo</li>
+                      <li>Verificar que el contenido esté en la cuenta del equipo, no en la del instructor</li>
+                      <li>Asegurar permisos de edición para que el instructor pueda revisar y dejar comentarios</li>
+                    </ul>
+                  </div>
+                </div>
+                <div>
+                  <div class="detail-block">
+                    <h4>Requisitos del Proyecto de Investigación</h4>
+                    <ul>
+                      <li>Seleccionar un reto en equipo</li>
+                      <li>Completar el plan de investigación incluido en las actividades</li>
+                      <li>Elegir tres técnicas: al menos 1 cualitativa o cuantitativa, y al menos 1 con interacción directa con personas</li>
+                      <li>El instructor proporcionó recomendaciones sobre cómo plantear preguntas en conversaciones</li>
+                    </ul>
+                  </div>
+                  <div class="detail-block" style="margin-top:20px">
+                    <h4>Preparación para la siguiente sesión</h4>
+                    <p>Todo el trabajo debe estar documentado en Miro para poder comenzar directamente con el análisis de información. El instructor compartirá tips y teoría para el análisis.</p>
+                  </div>
+                  <div class="detail-block" style="margin-top:20px">
+                    <h4>Dudas sobre asignación de equipos</h4>
+                    <div class="alert-note">
+                      Hubo confusión sobre si los equipos estaban asignados. Alicia envió un mensaje en el grupo de WhatsApp del MBA online a las 8:40 indicando que quería hacer cambios y hablar con el instructor. <strong>Confirmado: aún no hay grupos definitivos generados.</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- ── Fila 2 ── -->
+          <tr>
+            <td class="num">Reunión 2</td>
+            <td class="tema">Configuración del equipo, organización del proyecto y revisión inicial del reto</td>
+            <td class="fecha">05 mar 2025 · 18:30</td>
+            <td><span class="badge badge-done">Realizada</span></td>
+            <td>
+              <button class="btn-toggle" id="toggle-r2" onclick="toggleDetail('r2', this)">
+                Ver detalle <span class="arrow">&#8250;</span>
+              </button>
+            </td>
+          </tr>
+          <!-- ── Detalle Reunión 2 ── -->
+          <tr class="detail-row">
+            <td colspan="5">
+              <div class="detail-inner" id="detail-r2">
+
+                <!-- columna izquierda -->
+                <div>
+                  <div class="detail-block">
+                    <h4>Acciones y Próximos Pasos</h4>
+                    <ul class="checklist">
+                      <li>Cada miembro del equipo completar individualmente sus respuestas en el tablero de Miro</li>
+                      <li>Revisar el documento de roles enviado por Alejandra al WhatsApp</li>
+                      <li>Continuar con las actividades de la plantilla paso a paso según las instrucciones de la profesora</li>
+                      <li>Coordinar próxima reunión para avanzar con las siguientes dinámicas del proyecto</li>
+                    </ul>
+                    <div class="alert-note" style="margin-top:12px">
+                      <strong>⏳ Pendientes:</strong> trabajo de entorno económico · trabajo individual de liderazgo · trabajo de marketing
+                    </div>
+                  </div>
+
+                  <div class="detail-block" style="margin-top:20px">
+                    <h4>Configuración Inicial y Herramientas de Trabajo</h4>
+                    <ul>
+                      <li>Se configuró el acceso al tablero de Miro con la plantilla completa del proyecto</li>
+                      <li>Alejandra preparó un PDF con capturas paso a paso para facilitar el trabajo en Miro</li>
+                      <li>La profesora espera un mínimo de <strong>4 horas semanales</strong> de dedicación al proyecto</li>
+                      <li>Se utilizará <strong>Notion</strong> para grabar y transcribir todas las sesiones como evidencia del proceso</li>
+                      <li>Hubo dificultades técnicas con la conexión a internet de algunos participantes</li>
+                    </ul>
+                  </div>
+
+                  <div class="detail-block" style="margin-top:20px">
+                    <h4>Actividad Rompehielos (Ice Breaker)</h4>
+                    <p style="margin-bottom:10px">El equipo completó parcialmente la dinámica de conocimiento mutuo respondiendo preguntas personales:</p>
+                    <ul>
+                      <li><strong>Edad ideal para vivir para siempre:</strong> Los miembros coincidieron en que los 30–34 años son una edad ideal por el equilibrio entre experiencia, independencia y energía</li>
+                      <li><strong>Animal preferido:</strong> Águila (vigilancia y control), caballo (libertad y conexión), perro (simplicidad y disfrute)</li>
+                      <li><strong>Comida favorita:</strong> Arroz, helado de dulce de leche, asado, sandía y tomate</li>
+                      <li><strong>Películas favoritas:</strong> Históricas medievales, dramas emotivos y ciencia ficción</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- columna derecha -->
+                <div>
+                  <div class="detail-block">
+                    <h4>Objetivos Personales del Proyecto</h4>
+
+                    <p class="member-name">Pablo</p>
+                    <ul>
+                      <li>Aprender qué es verdaderamente la innovación (diferenciándola de la mejora de procesos)</li>
+                      <li>Desarrollar y comprender el proceso de innovación estructurado</li>
+                    </ul>
+
+                    <p class="member-name" style="margin-top:12px">María Clara</p>
+                    <ul>
+                      <li>Mejorar su vínculo con la tecnología y herramientas digitales</li>
+                      <li>Entender cómo la innovación se aplica en proyectos y equipos de trabajo</li>
+                      <li>Superar limitaciones tecnológicas personales</li>
+                    </ul>
+
+                    <p class="member-name" style="margin-top:12px">Alejandra</p>
+                    <ul>
+                      <li>Profundizar en la metodología del Design Thinking</li>
+                      <li>Salir de su zona de confort: ser menos perfeccionista y confiar más en el proceso</li>
+                      <li>Trabajar en paciencia, escucha activa y co-creación</li>
+                      <li>Liderar dinámicas de equipo y fortalecer su perfil como estratega en innovación</li>
+                    </ul>
+
+                    <p class="member-name" style="margin-top:12px">Enzo</p>
+                    <ul>
+                      <li>Aprender formas innovadoras de afrontar procesos creativos en el ambiente laboral</li>
+                      <li>Ser menos lineal y más creativo en la resolución de problemas en obras civiles</li>
+                      <li>Fortalecer dinámicas de equipo y materialización del trabajo</li>
+                      <li>Explorar nuevas tecnologías más allá de herramientas conocidas como Excel</li>
+                    </ul>
+                  </div>
+
+                  <div class="detail-block" style="margin-top:20px">
+                    <h4>Metodología y Expectativas</h4>
+                    <ul>
+                      <li>La profesora diseñó un proceso paso a paso que debe seguirse meticulosamente</li>
+                      <li>Es importante dejar evidencia de cada actividad realizada para la evaluación</li>
+                      <li>El proyecto funciona como un <strong>laboratorio de cuatro sesiones intensivas</strong></li>
+                      <li>La profesora revisará el trabajo directamente en Miro (está invitada al tablero)</li>
+                      <li>Se busca que el equipo comprenda la dinámica de innovación más allá de grandes encuestas</li>
+                    </ul>
+                  </div>
+
+                  <div class="detail-block" style="margin-top:20px">
+                    <h4>Recomendaciones Técnicas</h4>
+                    <ul>
+                      <li>Alejandra ofreció apoyo con automatizaciones e IA</li>
+                      <li>Se recomendó <strong>Claude</strong> como herramienta de IA para trabajo analítico, especialmente con Excel</li>
+                      <li>Se sugirió mantener las herramientas de IA dedicadas a usos específicos para evitar distorsiones</li>
+                      <li>Se mencionó el uso de HTML y prompting adecuado para optimizar resultados</li>
+                    </ul>
+                  </div>
+
+                  <div class="detail-block" style="margin-top:20px">
+                    <h4>Contexto del Curso</h4>
+                    <ul>
+                      <li>El equipo tiene múltiples entregas pendientes además de este proyecto</li>
+                      <li>Hay preocupación por el próximo examen de marketing</li>
+                      <li>La profesora enfatizó que <em>la innovación no es un don sino una estructura ordenada de ideas</em></li>
+                      <li>El equipo ya había trabajado con el eneagrama anteriormente para conocerse mejor</li>
+                    </ul>
+                  </div>
+                </div>
+
+              </div>
+            </td>
+          </tr>
+
+          <!-- ── Fila 3 ── -->
+          <tr>
+            <td class="num">Reunión 3</td>
+            <td class="tema">Selección del reto y construcción del mapa del problema</td>
+            <td class="fecha">07 mar 2025</td>
+            <td><span class="badge badge-done">Realizada</span></td>
+            <td>
+              <button class="btn-toggle" id="toggle-r3" onclick="toggleDetail('r3', this)">
+                Ver detalle <span class="arrow">&#8250;</span>
+              </button>
+            </td>
+          </tr>
+          <!-- ── Detalle Reunión 3 ── -->
+          <tr class="detail-row">
+            <td colspan="5">
+              <div class="detail-inner" id="detail-r3">
+
+                <!-- columna izquierda -->
+                <div>
+                  <div class="detail-block">
+                    <h4>Objetivo de la reunión</h4>
+                    <p>Avanzar en la fase inicial del proyecto: selección del reto, comprensión del problema y organización del trabajo del equipo.</p>
+                  </div>
+
+                  <div class="detail-block" style="margin-top:20px">
+                    <h4>Actividades realizadas</h4>
+                    <ul class="checklist">
+                      <li>Revisión de los retos propuestos en la actividad del curso</li>
+                      <li>Votación y discusión del reto a trabajar por el equipo</li>
+                      <li>Selección del reto: <strong>Salud digital accesible para colectivos vulnerables</strong></li>
+                      <li>Definición preliminar del enfoque del reto para el proyecto</li>
+                      <li>Construcción del mapa del problema en Miro</li>
+                      <li>Identificación de causas principales del problema</li>
+                      <li>Identificación de consecuencias o efectos del problema</li>
+                      <li>Organización de causas y efectos en ramas primarias y secundarias dentro del mapa</li>
+                    </ul>
+                  </div>
+
+                  <div class="detail-block" style="margin-top:20px">
+                    <h4>Acuerdos del equipo</h4>
+                    <ul class="checklist">
+                      <li>Utilizar Miro como espacio principal para documentar el trabajo del proyecto</li>
+                      <li>Registrar en el tablero todas las actividades realizadas durante el proceso</li>
+                      <li>Comunicación por WhatsApp para temas urgentes o coordinación rápida</li>
+                      <li>Realizar al menos una reunión semanal del equipo</li>
+                      <li>Priorizar los <strong>días sábado</strong> para las reuniones cuando sea posible</li>
+                      <li>Compartir avances individuales antes de consolidar el trabajo final del equipo</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- columna derecha -->
+                <div>
+                  <div class="detail-block">
+                    <h4>Resultados de la reunión</h4>
+                    <ul class="checklist">
+                      <li>Comprensión compartida del problema seleccionado</li>
+                      <li>Mapa del problema desarrollado con causas y consecuencias principales</li>
+                      <li>Definición de una estructura inicial para continuar la investigación del reto</li>
+                      <li>Organización del equipo para avanzar en la siguiente fase del proyecto</li>
+                    </ul>
+                  </div>
+
+                  <div class="detail-block" style="margin-top:20px">
+                    <h4>Próximos pasos acordados</h4>
+                    <ul class="checklist">
+                      <li>Diseñar el plan de investigación del problema</li>
+                      <li>Identificar perfiles de usuarios o colectivos relevantes para el estudio</li>
+                      <li>Definir técnicas de investigación (entrevistas, encuestas, observación u otras)</li>
+                      <li>Preparar preguntas o guías para la investigación con usuarios</li>
+                    </ul>
+                  </div>
+
+                  <div class="detail-block" style="margin-top:20px">
+                    <h4>Resumen ejecutivo</h4>
+                    <table style="width:100%; font-size:13px; border-collapse:collapse;">
+                      <tbody>
+                        <tr style="border-bottom:1px solid var(--border)">
+                          <td style="padding:8px 10px; font-weight:600; color:var(--text-2); white-space:nowrap">Reto seleccionado</td>
+                          <td style="padding:8px 10px; color:var(--text-1)">Salud digital accesible para colectivos vulnerables</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid var(--border)">
+                          <td style="padding:8px 10px; font-weight:600; color:var(--text-2); white-space:nowrap">Actividad principal</td>
+                          <td style="padding:8px 10px; color:var(--text-1)">Mapa del problema</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid var(--border)">
+                          <td style="padding:8px 10px; font-weight:600; color:var(--text-2); white-space:nowrap">Herramienta de trabajo</td>
+                          <td style="padding:8px 10px; color:var(--text-1)">Miro</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid var(--border)">
+                          <td style="padding:8px 10px; font-weight:600; color:var(--text-2); white-space:nowrap">Comunicación</td>
+                          <td style="padding:8px 10px; color:var(--text-1)">WhatsApp</td>
+                        </tr>
+                        <tr>
+                          <td style="padding:8px 10px; font-weight:600; color:var(--text-2); white-space:nowrap">Coordinación</td>
+                          <td style="padding:8px 10px; color:var(--text-1)">Reunión semanal (preferencia: sábados)</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+              </div>
+            </td>
+          </tr>
+
+          <!-- ── Fila 4 ── -->
+          <tr>
+            <td class="num">Reunión 4</td>
+            <td class="tema">Plan de investigación</td>
+            <td class="fecha">—</td>
+            <td><span class="badge badge-pending">Pendiente</span></td>
+            <td><span class="btn-none">— Sin fecha —</span></td>
+          </tr>
+
+          <!-- ── Fila 5 ── -->
+          <tr>
+            <td class="num">Reunión 5</td>
+            <td class="tema">Técnicas de investigación</td>
+            <td class="fecha">—</td>
+            <td><span class="badge badge-pending">Pendiente</span></td>
+            <td><span class="btn-none">— Sin fecha —</span></td>
+          </tr>
+
+          <!-- ── Fila 6 ── -->
+          <tr>
+            <td class="num">Reunión 6</td>
+            <td class="tema">Entrevistas con usuarios</td>
+            <td class="fecha">—</td>
+            <td><span class="badge badge-pending">Pendiente</span></td>
+            <td><span class="btn-none">— Sin fecha —</span></td>
+          </tr>
+
+          <!-- ── Fila 7 ── -->
+          <tr>
+            <td class="num">Reunión 7</td>
+            <td class="tema">Síntesis de hallazgos</td>
+            <td class="fecha">—</td>
+            <td><span class="badge badge-pending">Pendiente</span></td>
+            <td><span class="btn-none">— Sin fecha —</span></td>
+          </tr>
+
+          <!-- ── Fila 8 ── -->
+          <tr>
+            <td class="num">Reunión 8</td>
+            <td class="tema">Ideación de soluciones</td>
+            <td class="fecha">—</td>
+            <td><span class="badge badge-pending">Pendiente</span></td>
+            <td><span class="btn-none">— Sin fecha —</span></td>
+          </tr>
+
+          <!-- ── Fila 9 ── -->
+          <tr>
+            <td class="num">Reunión 9</td>
+            <td class="tema">Prototipo</td>
+            <td class="fecha">—</td>
+            <td><span class="badge badge-pending">Pendiente</span></td>
+            <td><span class="btn-none">— Sin fecha —</span></td>
+          </tr>
+
+          <!-- ── Fila 10 ── -->
+          <tr>
+            <td class="num">Reunión 10</td>
+            <td class="tema">Presentación final del proyecto</td>
+            <td class="fecha">—</td>
+            <td><span class="badge badge-pending">Pendiente</span></td>
+            <td><span class="btn-none">— Sin fecha —</span></td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div><!-- /card -->
+
+
+  <!-- ══ RESUMEN DE AVANCE ════════════════════════════════ -->
+  <div class="summary-section">
+    <h2 class="section-title">Resumen de avance</h2>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <!-- Cambia el número según avance real -->
+        <div class="stat-number">10</div>
+        <div class="stat-label">Total de reuniones</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">3</div>
+        <div class="stat-label">Reuniones realizadas</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">7</div>
+        <div class="stat-label">Reuniones pendientes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">30%</div>
+        <div class="stat-label">Avance general</div>
+      </div>
+    </div>
+
+    <!-- Observaciones -->
+    <div class="obs-card">
+      <h3>Observaciones del equipo</h3>
+      <!-- Edita el texto directamente aquí o en el textarea en el navegador -->
+      <textarea class="obs-text">
+Las primeras 3 reuniones se realizaron entre el 3 y el 7 de marzo de 2025. Se definió el reto del proyecto (Salud digital accesible para colectivos vulnerables) y se construyó el mapa del problema. Las reuniones 4 a 10 están pendientes de fecha. Se acordó reunirse preferentemente los sábados con al menos una sesión semanal.
+      </textarea>
+    </div>
+  </div>
+
+
+  <!-- ══ FOOTER ═══════════════════════════════════════════ -->
+  <footer>
+    Última actualización: <span id="fecha-hoy"></span>
+  </footer>
+
+</div><!-- /wrapper -->
+
+<script>
+  // Fecha de última actualización automática
+  const hoy = new Date();
+  const opciones = { day: '2-digit', month: 'long', year: 'numeric' };
+  document.getElementById('fecha-hoy').textContent =
+    hoy.toLocaleDateString('es-ES', opciones);
+
+  // Toggle detalle de reunión
+  function toggleDetail(id, btn) {
+    const panel = document.getElementById('detail-' + id);
+    const isOpen = panel.classList.contains('open');
+    panel.classList.toggle('open', !isOpen);
+    btn.classList.toggle('active', !isOpen);
+    btn.querySelector('.arrow').style.transform = isOpen ? '' : 'rotate(90deg)';
+  }
+</script>
+
+</body>
+</html>

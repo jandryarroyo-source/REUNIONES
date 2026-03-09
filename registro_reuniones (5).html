@@ -719,10 +719,101 @@
           <!-- ── Fila 4 ── -->
           <tr>
             <td class="num">Reunión 4</td>
-            <td class="tema">Plan de investigación</td>
-            <td class="fecha">—</td>
-            <td><span class="badge badge-pending">Pendiente</span></td>
-            <td><span class="btn-none">— Sin fecha —</span></td>
+            <td class="tema">Técnicas de investigación y diseño de encuesta</td>
+            <td class="fecha">09 mar 2026 · 17:48</td>
+            <td><span class="badge badge-done">Realizada</span></td>
+            <td>
+              <button class="btn-toggle" id="toggle-r4" onclick="toggleDetail('r4', this)">
+                Ver detalle <span class="arrow">&#8250;</span>
+              </button>
+            </td>
+          </tr>
+          <!-- ── Detalle Reunión 4 ── -->
+          <tr class="detail-row">
+            <td colspan="5">
+              <div class="detail-inner" id="detail-r4">
+
+                <!-- columna izquierda -->
+                <div>
+                  <div class="detail-block">
+                    <h4>Resumen de la reunión</h4>
+                    <p>El equipo discutió las técnicas de investigación para el proyecto sobre salud digital, acordando tres enfoques: revisión de estudios, encuestas digitales y entrevistas. Se planificó el diseño de una encuesta para identificar barreras de acceso en adultos de 35 a 70 años, y se distribuyó la tarea de recolección de respuestas entre los miembros.</p>
+                  </div>
+
+                  <div class="detail-block" style="margin-top:20px">
+                    <h4>Técnicas de investigación acordadas</h4>
+                    <ul class="checklist">
+                      <li><strong>Revisión de informes y estudios</strong> — para identificar barreras de acceso a salud digital</li>
+                      <li><strong>Encuestas digitales</strong> (cuantitativo) — análisis estadístico de niveles de uso y brechas digitales</li>
+                      <li><strong>Entrevistas y Focus Groups</strong> (cualitativo) — para comprender barreras reales de personas mayores y con baja alfabetización digital</li>
+                      <li><strong>Benchmark de plataformas</strong> — detectar buenas prácticas y soluciones existentes</li>
+                    </ul>
+                  </div>
+
+                  <div class="detail-block" style="margin-top:20px">
+                    <h4>Perfil del usuario vulnerable definido</h4>
+                    <ul>
+                      <li>Adultos de 35 a 70 años con dificultades de acceso a salud digital</li>
+                      <li>La vulnerabilidad no se limita a la edad: incluye alfabetización digital, nivel educativo, autonomía y acceso a internet</li>
+                      <li>Encuesta objetivo: <strong>10 a 15 participantes</strong></li>
+                      <li>Cada integrante debe conseguir entre <strong>3 y 4 respuestas</strong></li>
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- columna derecha -->
+                <div>
+                  <div class="detail-block">
+                    <h4>Siguientes pasos acordados</h4>
+                    <ul class="checklist">
+                      <li><strong>Maricela:</strong> Crear y enviar el formulario de encuesta en Google Forms y compartir el link por WhatsApp</li>
+                      <li><strong>María Clara:</strong> Compartir la encuesta en 2 o 3 grupos de WhatsApp para conseguir respuestas rápidas</li>
+                      <li><strong>Pablo:</strong> Compartir la encuesta por WhatsApp para obtener respuestas</li>
+                      <li><strong>Todo el equipo:</strong> Conseguir entre 3 y 4 respuestas cada uno (objetivo: 10–15 en total)</li>
+                      <li><strong>Maricela:</strong> Completar el tablero de Miro con las técnicas cualitativas y cuantitativas pendientes</li>
+                      <li><strong>Maricela:</strong> Contactar familiares y conocidos para participar en el estudio</li>
+                      <li>Completar el análisis de datos al día siguiente</li>
+                    </ul>
+                  </div>
+
+                  <div class="detail-block" style="margin-top:20px">
+                    <h4>Herramientas utilizadas</h4>
+                    <ul>
+                      <li>Google Forms — diseño de la encuesta</li>
+                      <li>WhatsApp — distribución de la encuesta</li>
+                      <li>Miro — documentación del tablero de investigación</li>
+                      <li>ChatGPT — apoyo en investigación cualitativa</li>
+                    </ul>
+                  </div>
+
+                  <div class="detail-block" style="margin-top:20px">
+                    <h4>Datos de la sesión</h4>
+                    <table style="width:100%; font-size:13px; border-collapse:collapse;">
+                      <tbody>
+                        <tr style="border-bottom:1px solid var(--border)">
+                          <td style="padding:8px 10px; font-weight:600; color:var(--text-2); white-space:nowrap">Fecha</td>
+                          <td style="padding:8px 10px; color:var(--text-1)">09 mar 2026 · 17:48 (Santiago)</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid var(--border)">
+                          <td style="padding:8px 10px; font-weight:600; color:var(--text-2); white-space:nowrap">Plataforma</td>
+                          <td style="padding:8px 10px; color:var(--text-1)">Zoom</td>
+                        </tr>
+                        <tr style="border-bottom:1px solid var(--border)">
+                          <td style="padding:8px 10px; font-weight:600; color:var(--text-2); white-space:nowrap">ID reunión</td>
+                          <td style="padding:8px 10px; color:var(--text-1)">850 4190 1705</td>
+                        </tr>
+                        <tr>
+                          <td style="padding:8px 10px; font-weight:600; color:var(--text-2); white-space:nowrap">Participantes</td>
+                          <td style="padding:8px 10px; color:var(--text-1)">Maricela, María Clara, Pablo</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <a class="btn-link" style="margin-top:12px; display:inline-block" href="https://docs.zoom.us/doc/FSDg8S1pSWOEYzTZTU-9ow?from=meeting_summary_web_summary_share&skipCheck=1" target="_blank">Ver resumen Zoom</a>
+                  </div>
+                </div>
+
+              </div>
+            </td>
           </tr>
 
           <!-- ── Fila 5 ── -->
@@ -797,15 +888,15 @@
         <div class="stat-label">Total de reuniones</div>
       </div>
       <div class="stat-card">
-        <div class="stat-number">3</div>
+        <div class="stat-number">4</div>
         <div class="stat-label">Reuniones realizadas</div>
       </div>
       <div class="stat-card">
-        <div class="stat-number">7</div>
+        <div class="stat-number">6</div>
         <div class="stat-label">Reuniones pendientes</div>
       </div>
       <div class="stat-card">
-        <div class="stat-number">30%</div>
+        <div class="stat-number">40%</div>
         <div class="stat-label">Avance general</div>
       </div>
     </div>
